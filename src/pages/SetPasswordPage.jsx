@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import apiClient from '../api/client';
+import './SetPasswordPage.css';
 
 const SetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  const email = useMemo(() => searchParams.get('email') || '', [searchParams]);
   const token = useMemo(() => searchParams.get('token') || '', [searchParams]);
 
   const [password, setPassword] = useState('');
@@ -17,6 +19,10 @@ const SetPasswordPage = () => {
 
   const validate = () => {
     const nextErrors = {};
+
+    if (!email) {
+      nextErrors.email = 'Missing email in setup link.';
+    }
 
     if (!token) {
       nextErrors.token = 'Missing password setup token.';
@@ -48,6 +54,7 @@ const SetPasswordPage = () => {
     setLoading(true);
     try {
       await apiClient.post('/customer/set-password', {
+        email,
         token,
         password,
         password_confirmation: confirmPassword,
@@ -63,41 +70,45 @@ const SetPasswordPage = () => {
   };
 
   return (
-    <div className="page-shell">
-      <div className="auth-card">
-        <h1>Set Password</h1>
-        <p>Create a password for your customer account.</p>
+    <div className="customer-set-password-page">
+      <div className="customer-set-password-card">
+        <h1 className="customer-set-password-title">Set Password</h1>
+        <p className="customer-set-password-subtitle">Create a password for your customer account.</p>
 
-        {errors.token ? <div className="alert">{errors.token}</div> : null}
-        {apiError ? <div className="alert">{apiError}</div> : null}
-        {success ? <div className="success">{success}</div> : null}
+        {email ? <p className="customer-set-password-subtitle">{email}</p> : null}
+        {errors.email ? <div className="customer-set-password-alert">{errors.email}</div> : null}
+        {errors.token ? <div className="customer-set-password-alert">{errors.token}</div> : null}
+        {apiError ? <div className="customer-set-password-alert">{apiError}</div> : null}
+        {success ? <div className="customer-set-password-success">{success}</div> : null}
 
-        <form onSubmit={handleSubmit} noValidate>
-          <label htmlFor="password">Password</label>
+        <form className="customer-set-password-form" onSubmit={handleSubmit} noValidate>
+          <label className="customer-set-password-label" htmlFor="password">Password</label>
           <input
             id="password"
             type="password"
+            className={`customer-set-password-input ${errors.password ? 'has-error' : ''}`}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             onBlur={validate}
             placeholder="Enter your password"
           />
-          {errors.password ? <span className="error-text">{errors.password}</span> : null}
+          {errors.password ? <span className="customer-set-password-error">{errors.password}</span> : null}
 
-          <label htmlFor="confirmPassword">Confirm Password</label>
+          <label className="customer-set-password-label" htmlFor="confirmPassword">Confirm Password</label>
           <input
             id="confirmPassword"
             type="password"
+            className={`customer-set-password-input ${errors.confirmPassword ? 'has-error' : ''}`}
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
             onBlur={validate}
             placeholder="Confirm password"
           />
           {errors.confirmPassword ? (
-            <span className="error-text">{errors.confirmPassword}</span>
+            <span className="customer-set-password-error">{errors.confirmPassword}</span>
           ) : null}
 
-          <button type="submit" disabled={loading || !token}>
+          <button className="customer-set-password-button" type="submit" disabled={loading || !email || !token}>
             {loading ? 'Setting password...' : 'Set Password'}
           </button>
         </form>
