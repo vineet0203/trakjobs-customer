@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import apiClient from '../api/client';
 import './LoginPage.css';
@@ -12,6 +12,17 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const authToken = params.get('authToken');
+
+    if (!authToken) return;
+
+    localStorage.setItem('customer_token', authToken);
+    localStorage.setItem('role', 'customer');
+    navigate('/dashboard', { replace: true });
+  }, [location.search, navigate]);
 
   const validate = () => {
     const nextErrors = {};
@@ -73,6 +84,20 @@ const LoginPage = () => {
   return (
     <div className="customer-login-page">
       <div className="customer-login-card">
+        <button
+          type="button"
+          className="customer-login-back-button"
+          onClick={() => {
+            if (window.history.length > 1) {
+              navigate(-1);
+              return;
+            }
+            navigate('/', { replace: true });
+          }}
+        >
+          Back
+        </button>
+
         <h1 className="customer-login-title">Customer Login</h1>
         <p className="customer-login-subtitle">Sign in to access your customer dashboard.</p>
 

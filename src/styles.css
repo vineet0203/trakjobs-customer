@@ -64,6 +64,21 @@ body {
   color: #202c4b;
 }
 
+.customer-login-back-button {
+  border: 0;
+  background: transparent;
+  color: #3574bb;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.customer-login-back-button:hover {
+  color: #2968aa;
+}
+
 .customer-login-subtitle,
 .customer-set-password-subtitle,
 .customer-dashboard-subtitle {
