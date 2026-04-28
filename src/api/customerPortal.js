@@ -10,6 +10,11 @@ export const getCustomerQuoteById = async (id) => {
   return response.data?.data;
 };
 
+export const updateCustomerQuoteApproval = async (id, action) => {
+  const response = await apiClient.patch(`/customer/quotes/${id}/approval`, { action });
+  return response.data?.data;
+};
+
 export const decideQuote = async (id, payload) => {
   const response = await apiClient.post(`/customer/quotes/${id}/decision`, payload);
   return response.data?.data;
@@ -28,4 +33,9 @@ export const getCustomerJobs = async () => {
 export const getCustomerJobById = async (id) => {
   const response = await apiClient.get(`/customer/jobs/${id}`);
   return response.data?.data;
+};
+
+export const getCustomerProfile = async () => {
+  const response = await apiClient.get('/customer/me');
+  return response.data?.data || response.data;
 };
