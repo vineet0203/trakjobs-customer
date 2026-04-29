@@ -88,7 +88,7 @@ const QuotesListPage = () => {
                             className="customer-link-btn"
                             role="button"
                             aria-disabled={updatingId === quote.id}
-                            onClick={(event) => handleApproval(event, quote.id, 'Accepted')}
+                            onClick={(event) => handleApproval(event, quote.id, 'approve')}
                           >
                             Accept
                           </a>
@@ -98,7 +98,7 @@ const QuotesListPage = () => {
                             className="customer-link-btn"
                             role="button"
                             aria-disabled={updatingId === quote.id}
-                            onClick={(event) => handleApproval(event, quote.id, 'Rejected')}
+                            onClick={(event) => handleApproval(event, quote.id, 'reject')}
                           >
                             Reject
                           </a>
