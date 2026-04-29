@@ -10,8 +10,10 @@ export const getCustomerQuoteById = async (id) => {
   return response.data?.data;
 };
 
-export const updateCustomerQuoteApproval = async (id, action) => {
-  const response = await apiClient.patch(`/customer/quotes/${id}/approval`, { action });
+export const updateCustomerQuoteApproval = async (id, action, customer_signature = null) => {
+  const payload = { action };
+  if (customer_signature) payload.customer_signature = customer_signature;
+  const response = await apiClient.patch(`/customer/quotes/${id}/approval`, payload);
   return response.data?.data;
 };
 
@@ -38,4 +40,28 @@ export const getCustomerJobById = async (id) => {
 export const getCustomerProfile = async () => {
   const response = await apiClient.get('/customer/me');
   return response.data?.data || response.data;
+};
+
+export const uploadProfilePhoto = async (file) => {
+  const formData = new FormData();
+  formData.append('photo', file);
+  const response = await apiClient.post('/customer/profile/photo', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data;
+};
+
+export const getNotifications = async () => {
+  const response = await apiClient.get('/customer/notifications');
+  return response.data;
+};
+
+export const markNotificationRead = async (id) => {
+  const response = await apiClient.post(`/customer/notifications/${id}/read`);
+  return response.data;
+};
+
+export const markAllNotificationsRead = async () => {
+  const response = await apiClient.post('/customer/notifications/read-all');
+  return response.data;
 };

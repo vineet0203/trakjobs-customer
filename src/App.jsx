@@ -10,7 +10,10 @@ import SetPasswordPage from './pages/SetPasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
-  const token = localStorage.getItem('customer_token');
+  const params = new URLSearchParams(window.location.search);
+  const urlToken = params.get("authToken");
+  if (urlToken) { localStorage.setItem("customer_token", urlToken); window.history.replaceState({}, "", "/dashboard"); }
+  const token = localStorage.getItem("customer_token");
 
   return (
     <Routes>
@@ -32,7 +35,7 @@ const App = () => {
         <Route path="jobs/:id" element={<JobDetailPage />} />
       </Route>
 
-      <Route path="/" element={<Navigate to={token ? '/dashboard' : '/login'} replace />} />
+      <Route index element={<Navigate to={token ? "/dashboard" : "/login"} replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

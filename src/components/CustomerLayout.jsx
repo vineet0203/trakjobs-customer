@@ -1,4 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import NotificationDropdown from './NotificationDropdown';
+import { useState, useEffect } from 'react';
 
 const SIDEBAR_ITEMS = [
   { path: '/dashboard', label: 'Dashboard', roles: ['customer'], icon: 'dashboard' },
@@ -9,7 +11,21 @@ const SIDEBAR_ITEMS = [
 const CustomerLayout = () => {
   const navigate = useNavigate();
   const role = localStorage.getItem('role') || 'customer';
-  const customer = JSON.parse(localStorage.getItem('customer_profile') || '{}');
+  const [customer, setCustomer] = useState(JSON.parse(localStorage.getItem('customer_profile') || '{}'));
+
+  useEffect(() => {
+    const sync = () => {
+    const fresh = JSON.parse(localStorage.getItem('customer_profile') || '{}');
+    setCustomer(fresh);
+  };
+  sync();
+  window.addEventListener('customer_profile_updated', sync);
+  window.addEventListener('storage', sync);
+  return () => {
+    window.removeEventListener('customer_profile_updated', sync);
+    window.removeEventListener('storage', sync);
+  };
+  }, []);
 
   const allowedItems = SIDEBAR_ITEMS.filter((item) => item.roles.includes(role));
 
@@ -23,7 +39,7 @@ const CustomerLayout = () => {
   return (
     <div className="customer-app-layout">
       <aside className="customer-sidebar">
-        <div className="customer-brand">TrackJobs</div>
+        <div className="customer-brand">TRAKJOBS</div>
 
         <nav className="customer-nav">
           {allowedItems.map((item) => (
@@ -65,14 +81,13 @@ const CustomerLayout = () => {
         <header className="customer-topbar">
           <div />
           <div className="customer-topbar-actions">
-            <button className="customer-icon-button" type="button" aria-label="Notifications">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                <path d="M12 22a2 2 0 002-2h-4a2 2 0 002 2zm6-6V11a6 6 0 00-5-5.91V4a1 1 0 10-2 0v1.09A6 6 0 006 11v5l-2 2v1h16v-1l-2-2z" />
-              </svg>
-            </button>
+            <NotificationDropdown />
             <div className="customer-profile-pill">
               <span className="customer-profile-avatar">
-                {(customer?.name || 'C').slice(0, 1).toUpperCase()}
+                {customer?.profile_photo
+                  ? <img src={customer.profile_photo} alt="avatar" style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover'}} />
+                  : (customer?.name || 'C').slice(0, 1).toUpperCase()
+                }
               </span>
               <span className="customer-profile-text">
                 <span className="customer-profile-name">{customer?.name || 'Customer'}</span>

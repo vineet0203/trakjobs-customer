@@ -1,0 +1,31 @@
+.loader-fullpage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+}
+.loader-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.loader-infinity svg {
+  width: 80px;
+  height: 40px;
+}
+.loader-path {
+  fill: none;
+  stroke: #4f46e5;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: infinity-draw 1.5s ease-in-out infinite;
+}
+@keyframes infinity-draw {
+  0%   { stroke-dashoffset: 300; opacity: 1; }
+  50%  { stroke-dashoffset: 0;   opacity: 1; }
+  100% { stroke-dashoffset: -300; opacity: 0; }
+}

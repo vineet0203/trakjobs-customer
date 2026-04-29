@@ -120,6 +120,19 @@ input {
   font-size: 14px;
 }
 
+.customer-login-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #dbe3f0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #202c4b;
+  background: #f8fafd;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+}
+
 .customer-login-input:focus,
 .customer-set-password-input:focus {
   border-color: var(--primary);
@@ -224,15 +237,15 @@ input {
   display: flex;
   align-items: center;
   padding: 0 20px;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 25px;
+  font-weight: 600;
   color: #ffffff;
 }
 
 .customer-nav {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
   padding: 4px 0;
 }
 
@@ -241,14 +254,16 @@ input {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: #d7e3f7;
-  padding: 8px 20px;
+  color: #ffffff;
+  padding: 6px 20px;
   font-size: 14px;
+  font-weight: 400;
+  min-height: 32px;
 }
 
 .customer-nav-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -336,6 +351,8 @@ input {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .customer-profile-text {
@@ -383,13 +400,14 @@ input {
 }
 
 .customer-page-subtitle {
-  margin: 6px 0 16px;
+  margin: 8px 0 28px;
   font-size: 13px;
   color: #5f6981;
 }
 
 .customer-table-wrap {
   overflow-x: auto;
+  margin-top: 24px;
 }
 
 .customer-table {
@@ -510,3 +528,7 @@ input {
     grid-template-columns: 1fr;
   }
 }
+.db-btn { text-decoration: none; }
+a.db-btn { text-decoration: none; }
+
+/* List page subtitle spacing */

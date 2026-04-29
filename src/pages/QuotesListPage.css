@@ -1,0 +1,25 @@
+.quotes-page { font-family:'Poppins',sans-serif; }
+.quotes-title { font-size:22px; font-weight:700; color:#111827; margin:0 0 20px; }
+.quotes-loading { color:#6B7280; font-size:14px; }
+.quotes-error { background:#FEF2F2; color:#DC2626; padding:12px 16px; border-radius:8px; font-size:14px; margin-bottom:16px; }
+.quotes-empty { color:#9CA3AF; font-size:14px; text-align:center; margin-top:40px; }
+.quotes-list { display:flex; flex-direction:column; gap:16px; }
+.quote-card { background:#fff; border:1px solid #E5E7EB; border-radius:12px; padding:20px; }
+.quote-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.quote-number { font-weight:700; font-size:14px; color:#3B6FD4; }
+.quote-status { display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+.status-approved { background:#ECFDF5; color:#059669; }
+.status-sent { background:#FFF7ED; color:#D97706; }
+.status-rejected { background:#FEF2F2; color:#DC2626; }
+.status-draft { background:#F3F4F6; color:#6B7280; }
+.quote-title { font-size:15px; font-weight:600; color:#111827; margin:0 0 4px; }
+.quote-amount { font-size:14px; color:#6B7280; margin:0 0 14px; }
+.quote-actions { display:flex; gap:10px; }
+.quote-btn-view { background:transparent; border:1px solid #D1D5DB; border-radius:6px; padding:6px 16px; font-size:13px; color:#374151; cursor:pointer; text-decoration:none; }
+.quote-btn-view:hover { background:#F3F4F6; }
+.quote-btn-accept { background:#059669; color:#fff; border:none; border-radius:6px; padding:6px 16px; font-size:13px; font-weight:600; cursor:pointer; }
+.quote-btn-accept:hover { background:#047857; }
+.quote-btn-accept:disabled { opacity:0.6; cursor:not-allowed; }
+.quote-btn-reject { background:#DC2626; color:#fff; border:none; border-radius:6px; padding:6px 16px; font-size:13px; font-weight:600; cursor:pointer; }
+.quote-btn-reject:hover { background:#B91C1C; }
+.quote-btn-reject:disabled { opacity:0.6; cursor:not-allowed; }
