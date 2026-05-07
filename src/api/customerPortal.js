@@ -65,3 +65,21 @@ export const markAllNotificationsRead = async () => {
   const response = await apiClient.post('/customer/notifications/read-all');
   return response.data;
 };
+
+export const getCustomerInvoices = async () => {
+  const response = await apiClient.get('/customer/invoices');
+  return response.data?.data?.data || response.data?.data || [];
+};
+
+export const getCustomerInvoiceById = async (id) => {
+  const response = await apiClient.get(`/customer/invoices/${id}`);
+  return response.data?.data;
+};
+
+export const updateCustomerInvoiceStatus = async (id, action, reject_reason = null) => {
+  const payload = { action };
+  if (reject_reason) payload.reject_reason = reject_reason;
+  const response = await apiClient.patch(`/customer/invoices/${id}/status`, payload);
+  return response.data?.data;
+};
+

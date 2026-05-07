@@ -111,7 +111,7 @@ const QuotesListPage = () => {
               <th style={{width:'130px'}}>VALID UNTIL</th>
               <th style={{width:'120px'}}>STATUS</th>
               <th style={{width:'130px'}}>AMOUNT</th>
-              <th style={{width:'160px'}}>ACTION</th>
+              <th style={{width:'250px'}}>ACTION</th>
             </tr>
           </thead>
           <tbody>

@@ -6,6 +6,7 @@ const SIDEBAR_ITEMS = [
   { path: '/dashboard', label: 'Dashboard', roles: ['customer'], icon: 'dashboard' },
   { path: '/quotes', label: 'Quotes', roles: ['customer'], icon: 'quotes' },
   { path: '/jobs', label: 'Jobs', roles: ['customer'], icon: 'jobs' },
+  { path: '/invoices', label: 'Invoices', roles: ['customer'], icon: 'invoices' },
 ];
 
 const CustomerLayout = () => {
@@ -64,6 +65,11 @@ const CustomerLayout = () => {
                 {item.icon === 'jobs' && (
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                     <path d="M10 4h4a2 2 0 012 2v2h4a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V10a2 2 0 012-2h4V6a2 2 0 012-2zm0 4h4V6h-4v2z" />
+                  </svg>
+                )}
+                {item.icon === 'invoices' && (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/>
                   </svg>
                 )}
               </span>

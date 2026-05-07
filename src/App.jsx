@@ -8,6 +8,8 @@ import QuoteDetailPage from './pages/QuoteDetailPage';
 import QuotesListPage from './pages/QuotesListPage';
 import SetPasswordPage from './pages/SetPasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import InvoicesListPage from './pages/InvoicesListPage';
+import InvoiceDetailPage from './pages/InvoiceDetailPage';
 
 const App = () => {
   const params = new URLSearchParams(window.location.search);
@@ -33,6 +35,8 @@ const App = () => {
         <Route path="quotes/:id" element={<QuoteDetailPage />} />
         <Route path="jobs" element={<JobsListPage />} />
         <Route path="jobs/:id" element={<JobDetailPage />} />
+        <Route path="invoices" element={<InvoicesListPage />} />
+        <Route path="invoices/:id" element={<InvoiceDetailPage />} />
       </Route>
 
       <Route index element={<Navigate to={token ? "/dashboard" : "/login"} replace />} />
