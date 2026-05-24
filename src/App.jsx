@@ -6,6 +6,8 @@ import JobsListPage from './pages/JobsListPage';
 import LoginPage from './pages/LoginPage';
 import QuoteDetailPage from './pages/QuoteDetailPage';
 import QuotesListPage from './pages/QuotesListPage';
+import ServiceRequestsPage from './pages/ServiceRequestsPage';
+import ServiceRequestDetailPage from './pages/ServiceRequestDetailPage';
 import SetPasswordPage from './pages/SetPasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import InvoicesListPage from './pages/InvoicesListPage';
@@ -33,6 +35,8 @@ const App = () => {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="quotes" element={<QuotesListPage />} />
         <Route path="quotes/:id" element={<QuoteDetailPage />} />
+        <Route path="service-requests" element={<ServiceRequestsPage />} />
+        <Route path="service-requests/:id" element={<ServiceRequestDetailPage />} />
         <Route path="jobs" element={<JobsListPage />} />
         <Route path="jobs/:id" element={<JobDetailPage />} />
         <Route path="invoices" element={<InvoicesListPage />} />

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 const SIDEBAR_ITEMS = [
   { path: '/dashboard', label: 'Dashboard', roles: ['customer'], icon: 'dashboard' },
   { path: '/quotes', label: 'Quotes', roles: ['customer'], icon: 'quotes' },
+  { path: '/service-requests', label: 'Service Requests', roles: ['customer'], icon: 'service-requests' },
   { path: '/jobs', label: 'Jobs', roles: ['customer'], icon: 'jobs' },
   { path: '/invoices', label: 'Invoices', roles: ['customer'], icon: 'invoices' },
 ];
@@ -60,6 +61,11 @@ const CustomerLayout = () => {
                 {item.icon === 'quotes' && (
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                     <path d="M4 4h16v12H7l-3 3V4zm3 5h10v2H7V9zm0-3h10v2H7V6zm0 6h6v2H7v-2z" />
+                  </svg>
+                )}
+                {item.icon === 'service-requests' && (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
                   </svg>
                 )}
                 {item.icon === 'jobs' && (

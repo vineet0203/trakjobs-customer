@@ -27,6 +27,22 @@ export const submitQuote = async (id, payload) => {
   return response.data?.data;
 };
 
+export const getCustomerServiceRequests = async () => {
+  const response = await apiClient.get('/customer/service-requests');
+  return response.data?.data?.data || response.data?.data || [];
+};
+
+export const getCustomerServiceRequestById = async (id) => {
+  const response = await apiClient.get(`/customer/service-requests/${id}`);
+  return response.data?.data;
+};
+
+export const updateCustomerServiceRequestStatus = async (id, action) => {
+  const payload = { action };
+  const response = await apiClient.patch(`/customer/service-requests/${id}/status`, payload);
+  return response.data?.data;
+};
+
 export const getCustomerJobs = async () => {
   const response = await apiClient.get('/customer/jobs');
   return response.data?.data?.data || [];
