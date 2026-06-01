@@ -37,8 +37,9 @@ export const getCustomerServiceRequestById = async (id) => {
   return response.data?.data;
 };
 
-export const updateCustomerServiceRequestStatus = async (id, action) => {
+export const updateCustomerServiceRequestStatus = async (id, action, customer_signature = null) => {
   const payload = { action };
+  if (customer_signature) payload.customer_signature = customer_signature;
   const response = await apiClient.patch(`/customer/service-requests/${id}/status`, payload);
   return response.data?.data;
 };

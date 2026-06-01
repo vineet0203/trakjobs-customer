@@ -28,8 +28,13 @@ const ServiceRequestsPage = () => {
   const [page, setPage]       = useState(1);
   const [error, setError]       = useState('');
   const [updatingId, setUpdatingId] = useState(null);
-  const [sigModal, setSigModal] = useState({ open: false, id: null });
+  const [sigModal, setSigModal] = useState(null);
+  const [sigMode, setSigMode]   = useState('draw');
+  const [drawing, setDrawing]   = useState(false);
+  const [hasSig, setHasSig]     = useState(false);
+  const [saving, setSaving]     = useState(false);
   const [actionError, setActionError] = useState('');
+  const canvasRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -45,13 +50,26 @@ const ServiceRequestsPage = () => {
   }, []);
 
   const openSigModal = (req) => {
-    setSigModal({ open: true, id: req.id });
-    setActionError('');
+    setSigModal(req); setHasSig(false); setActionError(''); setSigMode('draw');
+    setTimeout(() => canvasRef.current?.getContext('2d').clearRect(0,0,400,150), 50);
   };
 
-  const closeSigModal = () => {
-    setSigModal({ open: false, id: null });
-    setActionError('');
+  const closeSigModal = () => { setSigModal(null); setHasSig(false); setActionError(''); };
+
+  const getPoint = (e) => {
+    const r = canvasRef.current.getBoundingClientRect();
+    const t = e.touches?.[0];
+    return { x:(t?t.clientX:e.clientX)-r.left, y:(t?t.clientY:e.clientY)-r.top };
+  };
+  const startDraw = (e) => { setDrawing(true); const ctx=canvasRef.current.getContext('2d'); const p=getPoint(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); };
+  const doDraw   = (e) => { if(!drawing)return; e.preventDefault(); const ctx=canvasRef.current.getContext('2d'); ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#000'; const p=getPoint(e); ctx.lineTo(p.x,p.y);ctx.stroke(); setHasSig(true); };
+  const endDraw  = () => setDrawing(false);
+  const clearCanvas = () => { canvasRef.current.getContext('2d').clearRect(0,0,400,150); setHasSig(false); };
+  const handleUpload = (e) => {
+    const file = e.target.files?.[0]; if(!file)return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { const img=new Image(); img.onload=()=>{ const c=canvasRef.current; c.getContext('2d').clearRect(0,0,c.width,c.height); c.getContext('2d').drawImage(img,0,0,c.width,c.height); setHasSig(true); }; img.src=ev.target.result; };
+    reader.readAsDataURL(file);
   };
 
   const handleReject = async (id) => {
@@ -64,14 +82,18 @@ const ServiceRequestsPage = () => {
   };
 
   const submitAccept = async () => {
-    if (!sigModal.id) return;
+    if (!hasSig || !sigModal) return;
+    setSaving(true);
     setActionError('');
     try {
-      await updateCustomerServiceRequestStatus(sigModal.id, 'accepted');
-      setRequests(prev => prev.map(q => q.id === sigModal.id ? { ...q, status: 'approved', approval_status: 'accepted' } : q));
-      setSigModal({ open: false, id: null });
+      const dataUrl = canvasRef.current.toDataURL('image/png');
+      await updateCustomerServiceRequestStatus(sigModal.id, 'accepted', dataUrl);
+      setRequests(prev => prev.map(q => q.id === sigModal.id ? { ...q, status: 'approved', approval_status: 'accepted', customer_signature: dataUrl } : q));
+      closeSigModal();
     } catch(e) { 
       setActionError(e?.response?.data?.message || 'Failed to save.'); 
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -135,18 +157,32 @@ const ServiceRequestsPage = () => {
         </div>
       </div>
 
-      <Modal isOpen={sigModal.open} title="Accept Service Request" onClose={closeSigModal}>
-        <div style={{padding: '16px'}}>
-          <p style={{marginBottom: '16px', fontSize: '14px'}}>Are you sure you want to accept this service request? This will inform the customer that you are available and interested.</p>
-          {actionError && <p style={{color:'#DC2626',fontSize:'13px',marginBottom:'16px'}}>{actionError}</p>}
-          <div style={{display:'flex',gap:'10px'}}>
-            <button type="button" onClick={closeSigModal} style={{padding:'8px 16px',borderRadius:'6px',border:'1px solid #D1D5DB',background:'#fff',cursor:'pointer'}}>Cancel</button>
-            <button type="button" onClick={submitAccept} style={{padding:'8px 20px',borderRadius:'6px',border:'none',background:'#059669',color:'#fff',fontWeight:600,cursor:'pointer'}}>
-              Accept Request
-            </button>
+      {sigModal && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:9999,padding:'24px'}}>
+          <div style={{background:'#fff',borderRadius:'12px',padding:'24px',width:'min(480px,100%)',boxShadow:'0 20px 40px rgba(0,0,0,0.2)'}}>
+            <h3 style={{margin:'0 0 4px',fontSize:'18px',fontWeight:700}}>Sign & Accept Service Request</h3>
+            <p style={{margin:'0 0 16px',fontSize:'13px',color:'#6B7280'}}>{sigModal.quote_number || sigModal.id} — {sigModal.title}</p>
+            <div style={{display:'flex',gap:'10px',marginBottom:'12px'}}>
+              <button type="button" onClick={()=>{setSigMode('draw');clearCanvas();}} style={{padding:'6px 16px',borderRadius:'6px',border:'1px solid #D1D5DB',background:sigMode==='draw'?'#183B59':'#fff',color:sigMode==='draw'?'#fff':'#374151',cursor:'pointer',fontWeight:600}}>Draw</button>
+              <button type="button" onClick={()=>{setSigMode('upload');clearCanvas();}} style={{padding:'6px 16px',borderRadius:'6px',border:'1px solid #D1D5DB',background:sigMode==='upload'?'#183B59':'#fff',color:sigMode==='upload'?'#fff':'#374151',cursor:'pointer',fontWeight:600}}>Upload</button>
+            </div>
+            <canvas ref={canvasRef} width={400} height={150}
+              style={{border:'1px dashed #999',borderRadius:'4px',background:'#fafafa',cursor:sigMode==='draw'?'crosshair':'default',touchAction:'none',width:'100%'}}
+              onMouseDown={sigMode==='draw'?startDraw:undefined} onMouseMove={sigMode==='draw'?doDraw:undefined}
+              onMouseUp={endDraw} onMouseLeave={endDraw}
+              onTouchStart={sigMode==='draw'?startDraw:undefined} onTouchMove={sigMode==='draw'?doDraw:undefined} onTouchEnd={endDraw} />
+            {sigMode==='upload' && <input type="file" accept="image/*" onChange={handleUpload} style={{marginTop:'8px',display:'block'}} />}
+            {actionError && <p style={{color:'#DC2626',fontSize:'13px',marginTop:'8px'}}>{actionError}</p>}
+            <div style={{display:'flex',gap:'10px',marginTop:'16px'}}>
+              <button type="button" onClick={clearCanvas} style={{padding:'8px 16px',borderRadius:'6px',border:'1px solid #D1D5DB',background:'#fff',cursor:'pointer'}}>Clear</button>
+              <button type="button" onClick={closeSigModal} style={{padding:'8px 16px',borderRadius:'6px',border:'1px solid #D1D5DB',background:'#fff',cursor:'pointer'}}>Cancel</button>
+              <button type="button" onClick={submitAccept} disabled={!hasSig||saving} style={{padding:'8px 20px',borderRadius:'6px',border:'none',background:'#059669',color:'#fff',fontWeight:600,cursor:'pointer',opacity:(!hasSig||saving)?0.6:1}}>
+                {saving?'Saving...':'Accept & Save'}
+              </button>
+            </div>
           </div>
         </div>
-      </Modal>
+      )}
     </div>
   );
 };
