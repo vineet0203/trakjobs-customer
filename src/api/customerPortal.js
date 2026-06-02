@@ -100,3 +100,28 @@ export const updateCustomerInvoiceStatus = async (id, action, reject_reason = nu
   return response.data?.data;
 };
 
+export const getCustomerConversations = async () => {
+  const response = await apiClient.get('/customer/messages');
+  return response.data;
+};
+
+export const sendCustomerMessage = async (vendorId, body) => {
+  const response = await apiClient.post('/customer/messages/send', {
+    vendor_id: vendorId,
+    body,
+  });
+  return response.data;
+};
+
+export const markCustomerAsRead = async (vendorId) => {
+  const response = await apiClient.post('/customer/messages/read', {
+    vendor_id: vendorId,
+  });
+  return response.data;
+};
+
+export const getCustomerUnreadCount = async () => {
+  const response = await apiClient.get('/customer/messages/unread-count');
+  return response.data;
+};
+

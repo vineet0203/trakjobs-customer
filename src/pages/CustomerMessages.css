@@ -1,0 +1,39 @@
+.customer-messages-page {
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.customer-chat-container {
+  height: 100%;
+  width: 100%;
+}
+
+.customer-chat-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #64748b;
+  font-size: 16px;
+}
+
+.customer-no-vendor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+}
+
+.customer-no-vendor h3 {
+  margin-bottom: 10px;
+  color: #1e293b;
+}

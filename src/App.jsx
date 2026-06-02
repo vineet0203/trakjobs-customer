@@ -12,6 +12,7 @@ import SetPasswordPage from './pages/SetPasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import InvoicesListPage from './pages/InvoicesListPage';
 import InvoiceDetailPage from './pages/InvoiceDetailPage';
+import CustomerMessages from './pages/CustomerMessages';
 
 const App = () => {
   const params = new URLSearchParams(window.location.search);
@@ -41,6 +42,7 @@ const App = () => {
         <Route path="jobs/:id" element={<JobDetailPage />} />
         <Route path="invoices" element={<InvoicesListPage />} />
         <Route path="invoices/:id" element={<InvoiceDetailPage />} />
+        <Route path="messages" element={<CustomerMessages />} />
       </Route>
 
       <Route index element={<Navigate to={token ? "/dashboard" : "/login"} replace />} />
