@@ -98,6 +98,37 @@ const LoginPage = () => {
           Back
         </button>
 
+        {/* TrakJobs Logo Branding */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+          <a 
+            href="/" 
+            onClick={(e) => {
+              e.preventDefault();
+              if (window.location.port === '5174' || window.location.port === '5175') {
+                window.location.href = `http://${window.location.hostname}:5173`;
+              } else {
+                window.location.href = '/';
+              }
+            }} 
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}
+          >
+            <div style={{ display: 'flex', height: '44px', width: '44px', alignItems: 'center', justifyContent: 'center', borderRadius: '12px', backgroundColor: '#fff3cd', color: '#0F2744' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 12V22H22V12L12 2Z" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 22V12" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div style={{ lineHeight: 1, paddingTop: '4px', textAlign: 'left' }}>
+              <span style={{ fontSize: '22px', fontWeight: 'bold', letterSpacing: '-0.02em', color: '#0F2744', fontFamily: 'Poppins, sans-serif' }}>
+                Trak<span style={{ color: '#ffb800' }}>Jobs</span>
+              </span>
+              <div style={{ marginTop: '2px', fontSize: '10px', fontWeight: 600, color: '#64748b', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                Fix it. Right. On time.
+              </div>
+            </div>
+          </a>
+        </div>
+
         <h1 className="customer-login-title">Customer Login</h1>
         <p className="customer-login-subtitle">Sign in to access your customer dashboard.</p>
 
