@@ -9,6 +9,8 @@ import QuotesListPage from './pages/QuotesListPage';
 import ServiceRequestsPage from './pages/ServiceRequestsPage';
 import ServiceRequestDetailPage from './pages/ServiceRequestDetailPage';
 import SetPasswordPage from './pages/SetPasswordPage';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 import InvoicesListPage from './pages/InvoicesListPage';
 import InvoiceDetailPage from './pages/InvoiceDetailPage';
@@ -23,6 +25,8 @@ const App = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/set-password" element={<SetPasswordPage />} />
 
       <Route

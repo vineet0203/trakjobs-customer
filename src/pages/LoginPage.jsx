@@ -83,7 +83,12 @@ const LoginPage = () => {
 
   return (
     <div className="customer-login-page">
-      <div className="customer-login-card">
+      <div className="aurora-bg">
+        <div className="aurora-blob aurora-blob-1"></div>
+        <div className="aurora-blob aurora-blob-2"></div>
+        <div className="aurora-blob aurora-blob-3"></div>
+      </div>
+      <div className="customer-login-card animate-fade-in-up">
         <button
           type="button"
           className="customer-login-back-button"
@@ -158,6 +163,19 @@ const LoginPage = () => {
             placeholder="Enter your password"
           />
           {errors.password ? <span className="customer-login-error">{errors.password}</span> : null}
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '4px 0 8px' }}>
+            <a
+              href="/forgot-password"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/forgot-password');
+              }}
+              style={{ fontSize: '13px', color: '#3574bb', textDecoration: 'none', fontWeight: 500 }}
+            >
+              Forgot Password?
+            </a>
+          </div>
 
           <button className="customer-login-button" type="submit" disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
