@@ -47,11 +47,6 @@ const ForgotPassword = () => {
 
   return (
     <div className="customer-login-page">
-      <div className="aurora-bg">
-        <div className="aurora-blob aurora-blob-1"></div>
-        <div className="aurora-blob aurora-blob-2"></div>
-        <div className="aurora-blob aurora-blob-3"></div>
-      </div>
       <div className="customer-login-card animate-fade-in-up">
         <button
           type="button"

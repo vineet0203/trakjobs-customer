@@ -47,73 +47,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #05070f !important;
+  background: radial-gradient(circle at 20% 10%, rgba(53, 116, 187, 0.2), transparent 35%),
+    radial-gradient(circle at 80% 90%, rgba(12, 220, 248, 0.2), transparent 35%),
+    #f3f6fb !important;
   padding: 24px;
   color: #202c4b;
   position: relative;
   overflow: hidden;
-}
-
-/* Animated Aurora Background Effect */
-.aurora-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.aurora-blob {
-  position: absolute;
-  width: 80vw;
-  height: 80vh;
-  border-radius: 50%;
-  filter: blur(100px);
-  mix-blend-mode: screen;
-  opacity: 0.28;
-  pointer-events: none;
-}
-
-.aurora-blob-1 {
-  background: radial-gradient(circle, #7cff67 0%, rgba(124, 255, 103, 0) 70%);
-  top: -30%;
-  left: -20%;
-  animation: aurora-move-1 25s ease-in-out infinite alternate;
-}
-
-.aurora-blob-2 {
-  background: radial-gradient(circle, #b497cf 0%, rgba(180, 151, 207, 0) 70%);
-  bottom: -20%;
-  right: -10%;
-  animation: aurora-move-2 20s ease-in-out infinite alternate;
-}
-
-.aurora-blob-3 {
-  background: radial-gradient(circle, #6227ff 0%, rgba(98, 39, 255, 0) 70%);
-  top: 10%;
-  right: 15%;
-  animation: aurora-move-3 22s ease-in-out infinite alternate;
-}
-
-@keyframes aurora-move-1 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(15%, 20%) scale(1.15) rotate(45deg); }
-  100% { transform: translate(-10%, 10%) scale(0.9) rotate(-45deg); }
-}
-
-@keyframes aurora-move-2 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-15%, -15%) scale(0.9) rotate(-30deg); }
-  100% { transform: translate(10%, -5%) scale(1.1) rotate(30deg); }
-}
-
-@keyframes aurora-move-3 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(10%, -20%) scale(1.1) rotate(15deg); }
-  100% { transform: translate(-15%, 15%) scale(0.85) rotate(-15deg); }
 }
 
 .customer-dashboard-page {
