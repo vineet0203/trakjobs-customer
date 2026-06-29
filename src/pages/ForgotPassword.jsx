@@ -32,7 +32,7 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      await apiClient.post('/api/v1/customer/forgot-password', { email: email.trim() }, {
+      await apiClient.post('/customer/forgot-password', { email: email.trim() }, {
         headers: {
           'Content-Type': 'application/json',
         },

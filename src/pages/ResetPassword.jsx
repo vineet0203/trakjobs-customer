@@ -39,7 +39,7 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
-      await apiClient.post('/api/v1/customer/reset-password', {
+      await apiClient.post('/customer/reset-password', {
         token,
         password,
       }, {
