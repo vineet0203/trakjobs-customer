@@ -27,4 +27,25 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 403) {
+      const data = error.response.data;
+      if (data?.error_code === 'VERIFICATION_REQUIRED' || data?.message?.includes('must be verified')) {
+        const token = localStorage.getItem('customer_token');
+        
+        // Update local cache
+        const customer = JSON.parse(localStorage.getItem('customer_profile') || '{}');
+        customer.verification_status = 'pending';
+        localStorage.setItem('customer_profile', JSON.stringify(customer));
+
+        const vendorAppUrl = import.meta.env.VITE_VENDOR_APP_URL || 'http://localhost:5173';
+        window.location.href = `${vendorAppUrl}/verification?authToken=${token}&role=Customer`;
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default apiClient;

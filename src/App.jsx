@@ -19,7 +19,16 @@ import CustomerMessages from './pages/CustomerMessages';
 const App = () => {
   const params = new URLSearchParams(window.location.search);
   const urlToken = params.get("authToken");
-  if (urlToken) { localStorage.setItem("customer_token", urlToken); window.history.replaceState({}, "", "/dashboard"); }
+  const verifiedParam = params.get("verified");
+  if (urlToken) { 
+    localStorage.setItem("customer_token", urlToken); 
+    if (verifiedParam === "true") {
+      const profile = JSON.parse(localStorage.getItem('customer_profile') || '{}');
+      profile.verification_status = 'verified';
+      localStorage.setItem('customer_profile', JSON.stringify(profile));
+    }
+    window.history.replaceState({}, "", "/dashboard"); 
+  }
   const token = localStorage.getItem("customer_token");
 
   return (

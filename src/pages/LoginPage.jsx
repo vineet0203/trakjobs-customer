@@ -65,6 +65,12 @@ const LoginPage = () => {
       localStorage.setItem('customer_profile', JSON.stringify(customer || {}));
       localStorage.setItem('role', customer?.role || 'customer');
 
+      if (customer && customer.verification_status !== 'verified') {
+        const vendorAppUrl = import.meta.env.VITE_VENDOR_APP_URL || 'http://localhost:5173';
+        window.location.href = `${vendorAppUrl}/verification?authToken=${token}&role=Customer`;
+        return;
+      }
+
       const redirectTo = location.state?.from?.pathname || '/dashboard';
       navigate(redirectTo, { replace: true });
     } catch (error) {
