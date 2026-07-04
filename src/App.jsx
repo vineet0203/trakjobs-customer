@@ -12,6 +12,7 @@ import SetPasswordPage from './pages/SetPasswordPage';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
+import VerificationPage from './pages/VerificationPage';
 import InvoicesListPage from './pages/InvoicesListPage';
 import InvoiceDetailPage from './pages/InvoiceDetailPage';
 import CustomerMessages from './pages/CustomerMessages';
@@ -34,6 +35,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+        <Route path='/verification' element={<VerificationPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/set-password" element={<SetPasswordPage />} />

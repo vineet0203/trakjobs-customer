@@ -165,7 +165,7 @@ const CustomerLayout = () => {
                       onClick={() => {
                         const token = localStorage.getItem('customer_token');
                         const vendorAppUrl = import.meta.env.VITE_VENDOR_APP_URL || 'http://localhost:5173';
-                        window.location.href = `${vendorAppUrl}/verification?authToken=${token}&role=Customer`;
+                        window.location.href = `/verification?authToken=${token}&role=Customer`;
                       }}
                       fill="none" 
                       viewBox="0 0 24 24" 
