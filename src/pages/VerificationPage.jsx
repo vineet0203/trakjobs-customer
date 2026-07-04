@@ -6,17 +6,17 @@ const VerificationPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [customer, setCustomer] = useState(null);
-  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const token = searchParams.get('authToken');
 
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const res = await apiClient.get('/customer/me', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await apiClient.get('/customer/me', { 
+          headers: { Authorization: `Bearer ${token}` } 
+        });
         setCustomer(res.data?.data);
-      } catch (err) {
-        console.error('Failed to fetch customer:', err);
+      } catch {
         navigate('/login');
       } finally {
         setLoading(false);
@@ -25,14 +25,15 @@ const VerificationPage = () => {
     if (token) fetchCustomer();
   }, [token, navigate]);
 
-  if (loading) return <div>Loading...</div>;
-  if (!customer) return <div>Unauthorized</div>;
+  if (loading) return <div style={{padding: '20px'}}>Loading...</div>;
+  if (!customer) return <div style={{padding: '20px'}}>Unauthorized</div>;
 
   return (
-    <div className="verification-center">
+    <div style={{padding: '40px', maxWidth: '600px', margin: '0 auto'}}>
       <h1>Customer Verification</h1>
-      <p>Email: {customer.email}</p>
-      {/* Add verification form here similar to vendor but for customer */}
+      <p><strong>Email:</strong> {customer.email}</p>
+      <p style={{color: 'green'}}><strong>Status:</strong> {customer.verification_status || 'pending'}</p>
+      <p>Verification form placeholder - redirect after verification needed</p>
     </div>
   );
 };
