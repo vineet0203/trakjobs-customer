@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import InvoicesListPage from './pages/InvoicesListPage';
 import InvoiceDetailPage from './pages/InvoiceDetailPage';
 import CustomerMessages from './pages/CustomerMessages';
+import VerificationPage from './pages/VerificationPage';
 
 const App = () => {
   const params = new URLSearchParams(window.location.search);
@@ -37,6 +38,7 @@ const App = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/set-password" element={<SetPasswordPage />} />
+      <Route path="/verification" element={<VerificationPage />} />
 
       <Route
         path="/"

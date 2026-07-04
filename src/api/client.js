@@ -40,8 +40,7 @@ apiClient.interceptors.response.use(
         customer.verification_status = 'pending';
         localStorage.setItem('customer_profile', JSON.stringify(customer));
 
-        const vendorAppUrl = import.meta.env.VITE_VENDOR_APP_URL || 'http://localhost:5173';
-        window.location.href = `${vendorAppUrl}/verification?authToken=${token}&role=Customer`;
+        window.location.href = `/verification?authToken=${token}`;
       }
     }
     return Promise.reject(error);

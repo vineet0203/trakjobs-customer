@@ -9,11 +9,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   const customer = JSON.parse(localStorage.getItem('customer_profile') || '{}');
-  if (customer && customer.verification_status !== 'verified') {
-    const vendorAppUrl = import.meta.env.VITE_VENDOR_APP_URL || 'http://localhost:5173';
-    window.location.href = `${vendorAppUrl}/verification?authToken=${token}&role=Customer`;
-    return null;
-  }
+    return <Navigate to="/verification" replace />;
 
   return children;
 };
