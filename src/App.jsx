@@ -16,7 +16,6 @@ import VerificationPage from './pages/VerificationPage';
 import InvoicesListPage from './pages/InvoicesListPage';
 import InvoiceDetailPage from './pages/InvoiceDetailPage';
 import CustomerMessages from './pages/CustomerMessages';
-import VerificationPage from './pages/VerificationPage';
 
 const App = () => {
   const params = new URLSearchParams(window.location.search);
