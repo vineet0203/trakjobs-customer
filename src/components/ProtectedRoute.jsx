@@ -1,16 +1,13 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-  const location = useLocation();
-  const token = localStorage.getItem('customer_token');
-
-  if (!token) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
   const customer = JSON.parse(localStorage.getItem('customer_profile') || '{}');
+  
+  // Only redirect to verification if NOT verified
+  if (customer.verification_status !== 'verified') {
     return <Navigate to="/verification" replace />;
-
+  }
+  
   return children;
 };
 
