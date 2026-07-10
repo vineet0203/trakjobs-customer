@@ -1,8 +1,13 @@
 import apiClient from './client';
 
 export const getCustomerQuotes = async () => {
-  const response = await apiClient.get('/customer/quotes');
-  return response.data?.data?.data || response.data?.data || [];
+  try {
+    const response = await apiClient.get('/customer/quotes');
+    return response.data?.data?.data || response.data?.data || [];
+  } catch (err) {
+    console.warn('getCustomerQuotes failed:', err.message);
+    return [];
+  }
 };
 
 export const getCustomerQuoteById = async (id) => {
@@ -45,8 +50,13 @@ export const updateCustomerServiceRequestStatus = async (id, action, customer_si
 };
 
 export const getCustomerJobs = async () => {
-  const response = await apiClient.get('/customer/jobs');
-  return response.data?.data?.data || [];
+  try {
+    const response = await apiClient.get('/customer/jobs');
+    return response.data?.data?.data || [];
+  } catch (err) {
+    console.warn('getCustomerJobs failed:', err.message);
+    return [];
+  }
 };
 
 export const getCustomerJobById = async (id) => {

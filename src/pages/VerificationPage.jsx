@@ -104,6 +104,7 @@ export default function VerificationPage() {
   // Auth and profile initialization
   useEffect(() => {
     async function init() {
+      if (localStorage.getItem('verification_init_done')) return;
       const urlToken = searchParams.get('authToken');
       if (urlToken) {
         localStorage.setItem('customer_token', urlToken);
@@ -182,6 +183,7 @@ export default function VerificationPage() {
         }
       } finally {
         setLoading(false);
+        localStorage.setItem('verification_init_done', 'true');
       }
     }
     init();

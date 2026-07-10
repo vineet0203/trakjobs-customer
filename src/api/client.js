@@ -40,7 +40,9 @@ apiClient.interceptors.response.use(
         customer.verification_status = 'pending';
         localStorage.setItem('customer_profile', JSON.stringify(customer));
 
-        window.location.href = `/verification?authToken=${token}`;
+        if (!window.location.pathname.startsWith('/verification')) {
+        window.location.href = '/verification?authToken=' + token;
+      }
       }
     }
     return Promise.reject(error);

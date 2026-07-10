@@ -31,7 +31,7 @@ export function useFirebaseOtp() {
   // Format phone number to +91 format (India)
   const formatPhoneNumber = (phone) => {
     if (!phone) throw new Error('Invalid phone number format.');
-    const cleaned = phone.replace(/\D/g, '');
+    const cleaned = phone.replace(/\D/g, '').replace(/^0+/, '');
     if (cleaned.length === 10) {
       return `+91${cleaned}`;
     }
