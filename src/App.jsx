@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import CustomerLayout from './components/CustomerLayout';
 import DashboardPage from './pages/DashboardPage';
 import JobDetailPage from './pages/JobDetailPage';
@@ -18,19 +19,26 @@ import InvoiceDetailPage from './pages/InvoiceDetailPage';
 import CustomerMessages from './pages/CustomerMessages';
 
 const App = () => {
-  const params = new URLSearchParams(window.location.search);
-  const urlToken = params.get("authToken");
-  const verifiedParam = params.get("verified");
-  if (urlToken) { 
-    localStorage.setItem("customer_token", urlToken); 
-    if (verifiedParam === "true") {
-      const profile = JSON.parse(localStorage.getItem('customer_profile') || '{}');
-      profile.verification_status = 'verified';
-      localStorage.setItem('customer_profile', JSON.stringify(profile));
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlToken = params.get("authToken");
+    const verifiedParam = params.get("verified");
+    if (urlToken) { 
+      localStorage.setItem("customer_token", urlToken); 
+      if (verifiedParam === "true") {
+        const profile = JSON.parse(localStorage.getItem('customer_profile') || '{}');
+        profile.verification_status = 'verified';
+        localStorage.setItem('customer_profile', JSON.stringify(profile));
+      }
+      navigate('/dashboard', { replace: true }); 
     }
-    window.history.replaceState({}, "", "/dashboard"); 
-  }
+  }, [location, navigate]);
+
   const token = localStorage.getItem("customer_token");
+
 
   return (
     <Routes>

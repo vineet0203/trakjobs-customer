@@ -104,7 +104,6 @@ export default function VerificationPage() {
   // Auth and profile initialization
   useEffect(() => {
     async function init() {
-      if (localStorage.getItem('verification_init_done')) return;
       const urlToken = searchParams.get('authToken');
       if (urlToken) {
         localStorage.setItem('customer_token', urlToken);
@@ -112,6 +111,7 @@ export default function VerificationPage() {
       
       const token = localStorage.getItem('customer_token');
       if (!token) {
+        setLoading(false);
         navigate('/login');
         return;
       }
@@ -171,6 +171,7 @@ export default function VerificationPage() {
             const cachedProfile = JSON.parse(localStorage.getItem('customer_profile') || '{}');
             cachedProfile.verification_status = 'verified';
             localStorage.setItem('customer_profile', JSON.stringify(cachedProfile));
+            setLoading(false);
             navigate('/dashboard', { replace: true });
             return;
           }
@@ -183,7 +184,6 @@ export default function VerificationPage() {
         }
       } finally {
         setLoading(false);
-        localStorage.setItem('verification_init_done', 'true');
       }
     }
     init();
