@@ -116,66 +116,63 @@ export default function VerificationPage() {
         return;
       }
       
-      try {
-        const userRes = await apiClient.get('/customer/me');
-        const userData = userRes.data?.data || userRes.data;
-        setUser(userData);
+        try {
+          const userRes = await apiClient.get('/customer/me');
+          const userData = userRes.data?.data || userRes.data;
+          setUser(userData);
 
-        // Always prefill from userData first
-        const emailVal = userData?.email || '';
-        setEmailInput(emailVal);
-        if (emailVal) {
-          setEmailReadOnly(true);
-        }
+          // Sync profile to localStorage
+          const cachedProfile = JSON.parse(localStorage.getItem('customer_profile') || '{}');
+          const updatedProfile = { ...cachedProfile, ...userData };
+          localStorage.setItem('customer_profile', JSON.stringify(updatedProfile));
 
-        const phoneVal = userData?.phone || userData?.mobile_number || '';
-        setPhoneInput(phoneVal);
-        if (phoneVal) {
-          setPhoneReadOnly(true);
-        }
+          // Always prefill from userData first
+          const emailVal = userData?.email || '';
+          setEmailInput(emailVal);
 
-        if (userData?.first_name) {
-          setFirstName(userData.first_name);
-        }
-        if (userData?.last_name) {
-          setLastName(userData.last_name);
-        }
-        
-        // Load progress
-        const res = await apiClient.get('/verification/progress');
-        const progressData = res.data?.data || res.data;
-        if (progressData) {
-          const vData = progressData.verification_data || {};
-          if (vData.first_name) setFirstName(vData.first_name);
-          if (vData.last_name) setLastName(vData.last_name);
-          if (vData.dob) setDob(vData.dob);
-          if (vData.gender) setGender(vData.gender);
-          if (vData.email) {
-            setEmailInput(vData.email);
-            setEmailReadOnly(true);
+          const phoneVal = userData?.phone || userData?.mobile_number || '';
+          setPhoneInput(phoneVal);
+
+          if (userData?.first_name) {
+            setFirstName(userData.first_name);
           }
-          if (vData.phone) {
-            setPhoneInput(vData.phone);
-            setPhoneReadOnly(true);
+          if (userData?.last_name) {
+            setLastName(userData.last_name);
           }
           
-          if (progressData.document_type) {
-            setIdType(progressData.document_type);
+          // Load progress
+          const res = await apiClient.get('/verification/progress');
+          const progressData = res.data?.data || res.data;
+          if (progressData) {
+            const vData = progressData.verification_data || {};
+            if (vData.first_name) setFirstName(vData.first_name);
+            if (vData.last_name) setLastName(vData.last_name);
+            if (vData.dob) setDob(vData.dob);
+            if (vData.gender) setGender(vData.gender);
+            if (vData.email) {
+              setEmailInput(vData.email);
+            }
+            if (vData.phone) {
+              setPhoneInput(vData.phone);
+            }
+            
+            if (progressData.document_type) {
+              setIdType(progressData.document_type);
+            }
+            if (progressData.has_document) {
+              setIdFileName('government_id_document');
+            }
+            
+            // Check if already verified
+            if (progressData.status === 'verified' || userData.verification_status === 'verified') {
+              const profileToSave = JSON.parse(localStorage.getItem('customer_profile') || '{}');
+              profileToSave.verification_status = 'verified';
+              localStorage.setItem('customer_profile', JSON.stringify(profileToSave));
+              setLoading(false);
+              navigate('/dashboard', { replace: true });
+              return;
+            }
           }
-          if (progressData.has_document) {
-            setIdFileName('government_id_document');
-          }
-          
-          // Check if already verified
-          if (progressData.status === 'verified' || userData.verification_status === 'verified') {
-            const cachedProfile = JSON.parse(localStorage.getItem('customer_profile') || '{}');
-            cachedProfile.verification_status = 'verified';
-            localStorage.setItem('customer_profile', JSON.stringify(cachedProfile));
-            setLoading(false);
-            navigate('/dashboard', { replace: true });
-            return;
-          }
-        }
       } catch (err) {
         console.error(err);
         if (err.response?.status === 401) {

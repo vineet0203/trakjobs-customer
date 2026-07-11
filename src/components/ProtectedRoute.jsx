@@ -5,7 +5,7 @@ const ProtectedRoute = ({ children }) => {
   
   // Only redirect to verification if NOT verified
   if (customer.verification_status !== 'verified') {
-    return <Navigate to="/verification" replace />;
+    return <Navigate to="/verification-required" replace />;
   }
   
   return children;
