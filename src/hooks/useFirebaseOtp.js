@@ -11,9 +11,20 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase App
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
+let auth;
+
+const getFirebaseAuth = () => {
+  if (!firebaseConfig.apiKey) {
+    throw new Error('Phone verification is not configured for this app.');
+  }
+
+  if (!auth) {
+    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+  }
+
+  return auth;
+};
 
 export function useFirebaseOtp() {
   const [phoneSent, setPhoneSent] = useState(false);
@@ -71,7 +82,7 @@ export function useFirebaseOtp() {
     if (recaptchaVerifierRef.current) return;
 
     try {
-      recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'recaptcha-container-otp', {
+      recaptchaVerifierRef.current = new RecaptchaVerifier(getFirebaseAuth(), 'recaptcha-container-otp', {
         size: 'invisible',
         callback: () => {
           // reCAPTCHA solved
@@ -111,7 +122,7 @@ export function useFirebaseOtp() {
       initRecaptcha();
       
       const appVerifier = recaptchaVerifierRef.current;
-      const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+      const confirmationResult = await signInWithPhoneNumber(getFirebaseAuth(), formattedPhone, appVerifier);
       confirmationResultRef.current = confirmationResult;
       setPhoneSent(true);
       setPhoneTimer(45);

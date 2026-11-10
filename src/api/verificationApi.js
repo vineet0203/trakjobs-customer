@@ -6,7 +6,7 @@ export const sendOtp = async (payload) => {
 };
 
 export const verifyOtp = async (payload) => {
-  const res = await apiClient.post('/verification/otp/verify', payload);
+  const res = await apiClient.post('/verification/otp/verify', { type: 'email', ...payload });
   return res.data?.data;
 };
 

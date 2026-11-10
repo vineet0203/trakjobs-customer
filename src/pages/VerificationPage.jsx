@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import apiClient from '../api/client';
-import { useFirebaseOtp } from '../hooks/useFirebaseOtp';
 
 // Inline SVGs representing lucide-react icons for zero-dependency builds
 const UserIcon = (props) => (
@@ -86,20 +85,15 @@ export default function VerificationPage() {
   const [emailVerified, setEmailVerified] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [emailTimer, setEmailTimer] = useState(0);
-
-  const {
-    phoneSent, 
-    phoneOtp, 
-    phoneVerified, 
-    phoneError, 
-    phoneTimer, 
-    verifying, 
-    sending, 
-    setPhoneOtp,
-    handleSendPhoneOtp, 
-    handleVerifyPhoneOtp, 
-    handleResendPhoneOtp
-  } = useFirebaseOtp();
+  const [phoneOtpRequired, setPhoneOtpRequired] = useState(true);
+  const [phoneSent, setPhoneSent] = useState(false);
+  const [phoneOtp, setPhoneOtp] = useState('');
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
+  const [phoneTimer, setPhoneTimer] = useState(0);
+  const [verifyingPhone, setVerifyingPhone] = useState(false);
+  const [sendingPhone, setSendingPhone] = useState(false);
+  const isPhoneVerified = !phoneOtpRequired || phoneVerified;
 
   // Auth and profile initialization
   useEffect(() => {
@@ -144,6 +138,7 @@ export default function VerificationPage() {
           const res = await apiClient.get('/verification/progress');
           const progressData = res.data?.data || res.data;
           if (progressData) {
+            setPhoneOtpRequired(progressData.phone_otp_required !== false);
             const vData = progressData.verification_data || {};
             if (vData.first_name) setFirstName(vData.first_name);
             if (vData.last_name) setLastName(vData.last_name);
@@ -196,6 +191,12 @@ export default function VerificationPage() {
       clearInterval(emailInterval);
     };
   }, [emailTimer]);
+
+  useEffect(() => {
+    if (phoneTimer <= 0) return undefined;
+    const timer = setInterval(() => setPhoneTimer((prev) => prev - 1), 1000);
+    return () => clearInterval(timer);
+  }, [phoneTimer]);
 
   // Handle file selection and upload
   const handleFileUpload = async (e) => {
@@ -284,6 +285,7 @@ export default function VerificationPage() {
         code: emailOtp,
         otp: emailOtp,
         email: emailInput.trim(),
+        type: 'email',
       };
       const res = await apiClient.post('/verification/otp/verify', payload);
       if (res.data?.success || res.status === 200) {
@@ -291,6 +293,43 @@ export default function VerificationPage() {
       }
     } catch (err) {
       alert(err.response?.data?.message || 'Email verification failed.');
+    }
+  };
+
+  const handleSendPhoneOtp = async () => {
+    setPhoneError('');
+    setSendingPhone(true);
+    try {
+      await apiClient.post('/verification/otp/send', {
+        type: 'whatsapp',
+        mobile_number: phoneInput.trim(),
+      });
+      setPhoneSent(true);
+      setPhoneTimer(60);
+      alert('Phone verification code sent via WhatsApp.');
+    } catch (err) {
+      setPhoneError(err.response?.data?.message || 'Failed to send phone OTP.');
+    } finally {
+      setSendingPhone(false);
+    }
+  };
+
+  const handleVerifyPhoneOtp = async () => {
+    if (phoneOtp.length !== 6) {
+      alert('Please enter a 6-digit code.');
+      return;
+    }
+    setVerifyingPhone(true);
+    try {
+      await apiClient.post('/verification/otp/verify', {
+        code: phoneOtp,
+        type: 'whatsapp',
+      });
+      setPhoneVerified(true);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Phone verification failed.');
+    } finally {
+      setVerifyingPhone(false);
     }
   };
 
@@ -312,7 +351,7 @@ export default function VerificationPage() {
       alert('Please complete the Email verification step.');
       return;
     }
-    if (!phoneVerified) {
+    if (!isPhoneVerified) {
       alert('Please complete the WhatsApp verification step.');
       return;
     }
@@ -362,7 +401,7 @@ export default function VerificationPage() {
     if (firstName && lastName && dob && gender) pct += 25;
     if (idFileName) pct += 25;
     if (emailVerified) pct += 25;
-    if (phoneVerified) pct += 25;
+    if (isPhoneVerified) pct += 25;
     return pct;
   };
 
@@ -386,7 +425,7 @@ export default function VerificationPage() {
   const sidebarSteps = [
     { num: 1, title: 'Personal Info', desc: 'Legal name & details', done: !!(firstName && lastName && dob && gender) },
     { num: 2, title: 'Identity Verification', desc: 'Government-issued ID', done: !!idFileName },
-    { num: 3, title: 'Contact Verification', desc: 'Email & WhatsApp checks', done: !!(emailVerified && phoneVerified) },
+    { num: 3, title: 'Contact Verification', desc: 'Email & WhatsApp checks', done: !!(emailVerified && isPhoneVerified) },
   ];
 
   return (
@@ -588,7 +627,7 @@ export default function VerificationPage() {
                         }`}
                         placeholder="Enter mobile number"
                       />
-                      {phoneVerified && (
+                      {isPhoneVerified && (
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500 flex items-center">
                           <CheckCircleIcon className="w-5 h-5 text-emerald-500 fill-emerald-50" />
                         </div>
@@ -746,10 +785,12 @@ export default function VerificationPage() {
                   )}
                 </div>
 
-                {/* SMS Verification Section */}
+                {/* Phone OTP requirement is controlled by backend configuration. */}
+                {phoneOtpRequired && (
+                <>
                 <div className="pt-6 border-t border-slate-200">
                   <div className="flex items-center gap-2.5 mb-1.5">
-                    <h4 className="text-sm font-black text-[#0d1b2a] uppercase tracking-wider">SMS Verification</h4>
+                    <h4 className="text-sm font-black text-[#0d1b2a] uppercase tracking-wider">WhatsApp Verification</h4>
                     <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-md uppercase tracking-wider">Required</span>
                   </div>
                   
@@ -760,16 +801,16 @@ export default function VerificationPage() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <p className="text-xs text-slate-500">We will send a 6-digit confirmation code via SMS to <span className="font-bold text-[#0d1b2a]">{phoneInput}</span></p>
+                      <p className="text-xs text-slate-500">We will send a 6-digit confirmation code via WhatsApp to <span className="font-bold text-[#0d1b2a]">{phoneInput}</span></p>
                       <div className="flex flex-wrap items-center gap-3">
                         {!phoneSent ? (
                           <button
                             type="button"
-                            onClick={() => handleSendPhoneOtp(phoneInput)}
-                            disabled={sending || !phoneInput}
+                            onClick={handleSendPhoneOtp}
+                            disabled={sendingPhone || !phoneInput}
                             className="h-11 px-6 bg-[#0d1b2a] hover:bg-[#1a2c3f] text-white text-xs font-black rounded-xl transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-55"
                           >
-                            {sending ? (
+                            {sendingPhone ? (
                               <>
                                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                 Sending...
@@ -777,7 +818,7 @@ export default function VerificationPage() {
                             ) : (
                               <>
                                 <PhoneIcon className="w-4 h-4" />
-                                Send SMS OTP
+                                Send WhatsApp OTP
                               </>
                             )}
                           </button>
@@ -789,16 +830,16 @@ export default function VerificationPage() {
                               placeholder="6-Digit Code"
                               value={phoneOtp}
                               onChange={(e) => setPhoneOtp(e.target.value.replace(/\D/g, ''))}
-                              disabled={verifying}
+                              disabled={verifyingPhone}
                               className="w-40 h-11 px-4 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#ffb800] focus:border-transparent text-center text-sm font-extrabold tracking-widest disabled:bg-slate-100"
                             />
                             <button
                               type="button"
                               onClick={handleVerifyPhoneOtp}
-                              disabled={verifying || phoneOtp.length < 6}
+                              disabled={verifyingPhone || phoneOtp.length < 6}
                               className="h-11 px-6 bg-[#22c55e] hover:bg-[#1bb853] text-white text-xs font-black rounded-xl transition-all shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
-                              {verifying ? (
+                              {verifyingPhone ? (
                                 <>
                                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                   Verifying...
@@ -809,8 +850,8 @@ export default function VerificationPage() {
                             </button>
                             <button
                               type="button"
-                              disabled={phoneTimer > 0 || verifying}
-                              onClick={() => handleResendPhoneOtp(phoneInput)}
+                              disabled={phoneTimer > 0 || verifyingPhone || sendingPhone}
+                              onClick={handleSendPhoneOtp}
                               className="h-11 px-5 border border-slate-300 text-slate-600 text-xs font-black rounded-xl hover:bg-slate-50 transition-all disabled:opacity-55 cursor-pointer disabled:cursor-not-allowed"
                             >
                               {phoneTimer > 0 ? `Resend (${phoneTimer}s)` : 'Resend Code'}
@@ -825,6 +866,8 @@ export default function VerificationPage() {
 
                 {/* Hidden reCAPTCHA Container */}
                 <div id="recaptcha-container-otp" className="hidden" />
+                </>
+                )}
 
                 {/* Agreement Checkbox Card */}
                 <div className="flex items-start gap-4 p-5 bg-[#f8fafc] rounded-2xl border border-slate-200">
